@@ -80,6 +80,10 @@ FX_SUPPORTED_CURRENCIES=NGN,USD,EUR,GBP
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
+# Admin seeder (run: npm run seed:admin)
+ADMIN_EMAIL=mendyslam@gmail.com
+ADMIN_PASSWORD=StrongP@ssw0rd
+
 # Optional: comma-separated list of alert recipients for critical errors
 ALERT_EMAIL_TO=ops@example.com,devoncall@example.com
 ```
