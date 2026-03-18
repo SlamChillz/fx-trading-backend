@@ -114,7 +114,7 @@ export class TransactionsService {
           .select('tx.type', 'type')
           .addSelect('tx.status', 'status')
           .addSelect('COUNT(*)', 'count')
-          .addSelect('SUM(tx.amountFrom::numeric)', 'totalAmountFrom')
+          .addSelect(`SUM(CAST(tx."amountFrom" AS numeric))`, 'totalAmountFrom')
           .groupBy('tx.type')
           .addGroupBy('tx.status')
           .getRawMany<{
@@ -133,10 +133,10 @@ export class TransactionsService {
           .addSelect(`SUM(CASE WHEN tx.status = 'FAILED' THEN 1 ELSE 0 END)`, 'failedCount')
           .addSelect(`SUM(CASE WHEN tx.status = 'PENDING' THEN 1 ELSE 0 END)`, 'pendingCount')
           .addSelect(
-            `SUM(CASE WHEN tx.status = 'COMPLETED' THEN tx.amountFrom::numeric ELSE 0 END)`,
+            `SUM(CASE WHEN tx.status = 'COMPLETED' THEN CAST(tx."amountFrom" AS numeric) ELSE 0 END)`,
             'totalAmountFromCompleted',
           )
-          .addSelect('SUM(tx.amountFrom::numeric)', 'totalAmountFromAll')
+          .addSelect(`SUM(CAST(tx."amountFrom" AS numeric))`, 'totalAmountFromAll')
           .groupBy('tx.currencyFrom')
           .getRawMany<{
             currencyFrom: string;
@@ -161,7 +161,7 @@ export class TransactionsService {
               .addSelect(`SUM(CASE WHEN tx.status = 'FAILED' THEN 1 ELSE 0 END)`, 'failedCount')
               .addSelect(`SUM(CASE WHEN tx.status = 'PENDING' THEN 1 ELSE 0 END)`, 'pendingCount')
               .addSelect(
-                `SUM(CASE WHEN tx.status = 'COMPLETED' THEN tx.amountFrom::numeric ELSE 0 END)`,
+                `SUM(CASE WHEN tx.status = 'COMPLETED' THEN CAST(tx."amountFrom" AS numeric) ELSE 0 END)`,
                 'totalAmountFromCompleted',
               )
               .groupBy(`date_trunc('day', tx."createdAt")`)
