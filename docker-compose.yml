@@ -1,0 +1,50 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: fx_trading_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-fx_trading}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: fx_trading_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+
+  api:
+    build: .
+    container_name: fx_trading_api
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    ports:
+      - '3000:3000'
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: fx_trading_pgadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5050:80'
+
+volumes:
+  db_data:
+
