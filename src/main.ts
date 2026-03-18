@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { TracingInterceptor } from './common/tracing.interceptor';
+import { runAdminSeed } from './seed/admin-seed';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,6 +29,8 @@ async function bootstrap() {
   httpAdapter.get('/api-json', (req, res) => {
     res.json(document);
   });
+
+  void runAdminSeed('startup');
 
   await app.listen(process.env.PORT ?? 3000);
 }
